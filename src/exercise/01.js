@@ -5,15 +5,16 @@ import * as React from 'react'
 import {PokemonDataView, fetchPokemon, PokemonErrorBoundary} from '../pokemon'
 
 let pokemon
-const pokemonPromise = fetchPokemon('pikacha').then(
+let pokemonError
+const pokemonPromise = fetchPokemon('pikachu').then(
   resolvedValue => (pokemon = resolvedValue),
-  rejectedValue => (pokemon = rejectedValue),
+  error => (pokemonError = error),
 )
 
 function PokemonInfo() {
-  if (!pokemon) throw pokemonPromise
+  if (pokemonError) throw pokemonError
 
-  if (pokemon instanceof Error) throw pokemon
+  if (!pokemon) throw pokemonPromise
 
   return (
     <div>
