@@ -29,7 +29,12 @@ const SUSPENSE_CONFIG = {
   busyMinDurationMs: 700,
 }
 
+const PokemonResourceCacheContext = React.createContext(getPokemonResource)
 const pokemonResourceCache = {}
+
+function usePokemonResourceCache() {
+  return React.useContext(PokemonResourceCacheContext)
+}
 
 function getPokemonResource(pokemonName) {
   const lowerName = pokemonName.toLowerCase()
@@ -49,6 +54,7 @@ function App() {
   const [pokemonName, setPokemonName] = React.useState('')
   const [startTransition, isPending] = React.useTransition(SUSPENSE_CONFIG)
   const [pokemonResource, setPokemonResource] = React.useState(null)
+  const getPokemonResource = usePokemonResourceCache()
 
   React.useEffect(() => {
     if (!pokemonName) {
