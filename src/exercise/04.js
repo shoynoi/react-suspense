@@ -41,15 +41,20 @@ function usePokemonResourceCache() {
   return value
 }
 
-function PokemonCacheProvider({children}) {
+function PokemonCacheProvider({children, cacheTime = 5000}) {
   const pokemonResourceCache = React.useRef({})
+  const expiredTime = React.useRef(Number(new Date()) + cacheTime)
   const getPokemonResource = React.useCallback(pokemonName => {
     const lowerName = pokemonName.toLowerCase()
+    if (Number(new Date()) > expiredTime.current) {
+      pokemonResourceCache.current = {}
+    }
     let resource = pokemonResourceCache.current[lowerName]
     if (!resource) {
       resource = createPokemonResource(lowerName)
       pokemonResourceCache.current[lowerName] = resource
     }
+    expiredTime.current = Number(new Date()) + cacheTime
     return resource
   }, [])
 
